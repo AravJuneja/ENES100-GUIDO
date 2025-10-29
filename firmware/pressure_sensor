@@ -1,0 +1,41 @@
+from machine import ADC, Pin
+from time import sleep
+
+# --- ADC setup ---
+adc = ADC(Pin(34))          # Use ADC1 pin, e.g., GPIO34
+adc.atten(ADC.ATTN_11DB)    # Full 0–3.3 V range
+adc.width(ADC.WIDTH_12BIT)  # 12-bit ADC (0–4095)
+
+# --- Calibration constants ---
+# Measure these manually:
+ADC_MIN = 120      # ADC reading at 0 g
+ADC_MAX = 2850     # ADC reading at reference weight (e.g. 1000 g)
+GRAMS_MAX = 5000.0 # Reference weight used for calibration (in grams)
+
+def adc_to_grams(adc_value):
+    # Clamp to valid range
+    adc_value = max(ADC_MIN, min(adc_value, ADC_MAX))
+    # Linear scaling
+    grams = (adc_value - ADC_MIN) * GRAMS_MAX / (ADC_MAX - ADC_MIN)
+    return grams
+
+def smooth_read(samples=10, delay=0.01):
+    """Average multiple ADC samples for stability."""
+    total = 0
+    for _ in range(samples):
+        total += adc.read()
+        sleep(delay)
+    return total / samples
+
+# --- Main loop ---
+while True:
+    raw_value = smooth_read()
+    weight_g = adc_to_grams(raw_value)
+    weight_class = "medium"
+    if raw_value < 3300:
+        weight_class = "low"
+    elif raw_value > 3800:
+        weight_class = "heavy"
+    print("ADC: {:4.0f}  →  Weight Class: {} g".format(raw_value, weight_class))
+    sleep(0.5)
+
