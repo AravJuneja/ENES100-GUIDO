@@ -9,7 +9,7 @@ ADC_MIN = 120
 ADC_MAX = 2850
 GRAMS_MAX = 5000.0
 
-PLASTIC_THRESHOLDS = {"low": 3300, "high": 3800}
+PLASTIC_THRESHOLDS = {"low": 3096, "high": 3232}
 FOAM_THRESHOLDS = {"low": 92, "high": 577}
 
 def read_average(samples=10, delay_time=0.01):
@@ -32,7 +32,7 @@ def classify_weight(reading, is_plastic):
     else:
         return "medium"
 
-is_plastic = False
+is_plastic = True  # Set True for plastic objects
 
 while True:
     raw_value = read_average()
@@ -41,4 +41,3 @@ while True:
     print("ADC: {:4.0f}  →  Weight Class: {} g".format(raw_value, weight_class))
     print("Weight in grams: {:.0f}".format(weight_g))
     sleep(0.5)
-
