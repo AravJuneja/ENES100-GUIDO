@@ -40,18 +40,19 @@ def measure_weight(label):
 print("Welcome to the weight calibration script!\n")
 
 # Step 1: Light weight
-light_avg = measure_weight("light foam ball")
+light_avg = measure_weight("light ball")
 
 # Step 2: Medium weight
-medium_avg = measure_weight("medium weight object")
+medium_avg = measure_weight("medium weight ball")
 
 # Step 3: Heavy weight
-heavy_avg = measure_weight("heavy weight object")
+heavy_avg = measure_weight("heavy ball")
 
 # Display ADC ranges for categories
 print("Calibration complete! Here are the ADC ranges for each category:")
 print(f"Low (light): 0 – {light_avg:.0f}")
 print(f"Medium: {light_avg:.0f} – {medium_avg:.0f}")
 print(f"High (heavy): {medium_avg:.0f} – {heavy_avg:.0f}")
+
 
 
