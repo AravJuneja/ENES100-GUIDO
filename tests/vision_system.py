@@ -20,4 +20,3 @@ print("Connected!")
 while True:
     print(f"x: {enes100.x:.2f}, y: {enes100.y:.2f}, theta: {enes100.theta:.2f}")
     sleep(1)
-

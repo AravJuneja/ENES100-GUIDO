@@ -1,7 +1,5 @@
 from machine import Pin, PWM
-from enes100 import enes100
 from time import sleep
-from vision_system import VisionSystem as vs
 
 # ===== Dual DC Motor Control Class =====
 class MotorControl:
@@ -74,28 +72,16 @@ class MotorControl:
         """Run both motors backward."""
         self.backward_A(speed)
         self.backward_B(speed)
-    
+
+        
+
+    def turn
 
     def stop(self):
         """Stop both motors."""
         self.stop_A()
         self.stop_B()
 
-    def moveTo(self, x, y, speed):
-       
-        """ 
-        pseudo-code:
-        current_x, current_y = vs.get_position()
-        while distance(current_x, current_y, x, y) > threshold:
-            desired_theta = calculate_angle(current_x, current_y, x, y)
-            self.turnTo(desired_theta)
-            self.forward(speed)
-            current_x, current_y = vs.get_position()
-        self.stop()
-
-            # Move the robot to the specified (x, y) coordinates at the given speed.
-        """
-        pass
 
 if __name__ == "__main__":
     # Pin configuration (adjust to match your wiring)
