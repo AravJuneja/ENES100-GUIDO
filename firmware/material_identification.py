@@ -3,7 +3,7 @@ from time import sleep
 
 # Define pins
 trig = Pin(12, Pin.OUT)
-echo = Pin(23, Pin.IN)
+echo = Pin(13, Pin.IN)
 
 def get_distance():
     # Trigger the sensor
