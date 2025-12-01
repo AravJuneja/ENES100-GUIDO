@@ -1,104 +1,56 @@
 from machine import Pin, PWM
-from enes100 import enes100
 from time import sleep
-from vision_system import VisionSystem as vs
 
-# ===== Dual DC Motor Control Class =====
 class MotorControl:
     def __init__(self, 
                  in1, in2, ena, 
                  in3, in4, enb, 
                  min_duty=750, max_duty=1023, freq=15000):
-        # --- Motor A Pins ---
+
+        # Motor A pins
         self.in1 = Pin(in1, Pin.OUT)
         self.in2 = Pin(in2, Pin.OUT)
         self.ena = PWM(Pin(ena), freq=freq)
-        DualDCMotor
-        # --- Motor B Pins ---
+
+        # Motor B pins
         self.in3 = Pin(in3, Pin.OUT)
         self.in4 = Pin(in4, Pin.OUT)
         self.enb = PWM(Pin(enb), freq=freq)
 
-        # --- Motor Speed Range ---
         self.min_duty = min_duty
         self.max_duty = max_duty
 
-    # ===== Internal Helper =====
     def _duty_cycle(self, speed):
-        """Convert 0–100% speed to PWM duty value."""
         if speed <= 0 or speed > 100:
             return 0
-        return int(self.min_duty + (self.max_duty - self.min_duty) * ((speed - 1) / (100 - 1)))
+        return int(self.min_duty + (self.max_duty - self.min_duty) * ((speed - 1) / 99))
 
-    # ===== Motor A Control =====
     def forward_A(self, speed):
         self.ena.duty(self._duty_cycle(speed))
         self.in1.value(1)
         self.in2.value(0)
 
-    def backward_A(self, speed):
-        self.ena.duty(self._duty_cycle(speed))
-        self.in1.value(0)
-        self.in2.value(1)
-
-    def stop_A(self):
-        self.ena.duty(0)
-        self.in1.value(0)
-        self.in2.value(0)
-
-    # ===== Motor B Control =====
     def forward_B(self, speed):
         self.enb.duty(self._duty_cycle(speed))
         self.in3.value(1)
         self.in4.value(0)
 
-    def backward_B(self, speed):
-        self.enb.duty(self._duty_cycle(speed))
-        self.in3.value(0)
-        self.in4.value(1)
-
-    def stop_B(self):
-        self.enb.duty(0)
-        self.in3.value(0)
-        self.in4.value(0)
-
-    def turnTo(theta):
-        pass
-
     def forward(self, speed):
-        """Run both motors forward."""
         self.forward_A(speed)
         self.forward_B(speed)
 
-    def backward(self, speed):
-        """Run both motors backward."""
-        self.backward_A(speed)
-        self.backward_B(speed)
-    
-
     def stop(self):
-        """Stop both motors."""
-        self.stop_A()
-        self.stop_B()
+        self.ena.duty(0)
+        self.enb.duty(0)
+        self.in1.value(0)
+        self.in2.value(0)
+        self.in3.value(0)
+        self.in4.value(0)
 
-    def moveTo(self, x, y, speed):
-       
-        """ 
-        pseudo-code:
-        current_x, current_y = vs.get_position()
-        while distance(current_x, current_y, x, y) > threshold:
-            desired_theta = calculate_angle(current_x, current_y, x, y)
-            self.turnTo(desired_theta)
-            self.forward(speed)
-            current_x, current_y = vs.get_position()
-        self.stop()
 
-            # Move the robot to the specified (x, y) coordinates at the given speed.
-        """
-        pass
-
+# ===== MAIN PROGRAM =====
 if __name__ == "__main__":
-    # Pin configuration (adjust to match your wiring)
+    # Update these pin numbers as needed
     PIN_IN1 = 19
     PIN_IN2 = 18
     PIN_ENA = 23
@@ -106,13 +58,14 @@ if __name__ == "__main__":
     PIN_IN4 = 17
     PIN_ENB = 16
 
-    motors = DualDCMotor(PIN_IN1, PIN_IN2, PIN_ENA, PIN_IN3, PIN_IN4, PIN_ENB)
+    motors = MotorControl(PIN_IN1, PIN_IN2, PIN_ENA,
+                          PIN_IN3, PIN_IN4, PIN_ENB)
 
-    print("Running both motors forward at 100% for 5 seconds...")
+    print("Moving forward for 5 seconds...")
     motors.forward(100)
     sleep(5)
 
-    print("Stopping both motors.")
+    print("Stopping motors...")
     motors.stop()
 
-    print("Done ✅")
+    print("Done.")
